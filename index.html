@@ -19,6 +19,9 @@
       --bad:#fb7185;
       --shadow: 0 12px 30px rgba(0,0,0,.35);
       --radius: 18px;
+
+      /* ✅ 背景底圖：要換圖就改這行 URL */
+      --bg-img: url("https://res.klook.com/image/upload/activities/dou1pmzm3f41p75jkox9.jpg");
     }
     [data-theme="light"]{
       --bg:#f6f8ff;
@@ -32,15 +35,34 @@
       --shadow: 0 14px 30px rgba(25,35,60,.10);
     }
     *{box-sizing:border-box}
+
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-      background: radial-gradient(1200px 800px at 20% -10%, rgba(124,92,255,.35), transparent 55%),
-                  radial-gradient(900px 700px at 90% 10%, rgba(45,226,230,.25), transparent 55%),
-                  var(--bg);
+      background:
+        linear-gradient(180deg, rgba(11,15,23,.76), rgba(11,15,23,.88)),
+        radial-gradient(1200px 800px at 20% -10%, rgba(124,92,255,.35), transparent 55%),
+        radial-gradient(900px 700px at 90% 10%, rgba(45,226,230,.25), transparent 55%),
+        var(--bg-img),
+        var(--bg);
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
       color:var(--text);
       min-height:100vh;
     }
+    [data-theme="light"] body{
+      background:
+        linear-gradient(180deg, rgba(246,248,255,.76), rgba(246,248,255,.88)),
+        radial-gradient(1200px 800px at 20% -10%, rgba(124,92,255,.16), transparent 55%),
+        radial-gradient(900px 700px at 90% 10%, rgba(45,226,230,.12), transparent 55%),
+        var(--bg-img),
+        var(--bg);
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
     a{color:inherit}
     .wrap{
       max-width:1100px;
@@ -70,6 +92,7 @@
       color:var(--text);
       width:fit-content;
       box-shadow:0 10px 24px rgba(124,92,255,.10);
+      backdrop-filter: blur(8px);
     }
     .badge .dot{
       width:10px; height:10px; border-radius:50%;
@@ -97,7 +120,7 @@
     }
     .btn{
       border:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
       color:var(--text);
       padding:10px 12px;
       border-radius:12px;
@@ -105,9 +128,10 @@
       transition:.18s ease;
       box-shadow: 0 8px 18px rgba(0,0,0,.12);
       user-select:none;
+      backdrop-filter: blur(10px);
     }
     [data-theme="light"] .btn{
-      background: linear-gradient(180deg, rgba(10,15,30,.04), rgba(10,15,30,.02));
+      background: linear-gradient(180deg, rgba(10,15,30,.06), rgba(10,15,30,.02));
       box-shadow: 0 10px 18px rgba(25,35,60,.08);
     }
     .btn:hover{transform: translateY(-1px); border-color: rgba(124,92,255,.55)}
@@ -122,8 +146,9 @@
       align-items:center;
       padding:10px 12px;
       border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
+      background: rgba(255,255,255,.06);
       border-radius:12px;
+      backdrop-filter: blur(10px);
     }
     input[type="search"]{
       width:min(360px, 72vw);
@@ -146,9 +171,10 @@
       margin:16px 0 22px;
       padding:14px 14px 12px;
       border:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
       border-radius:var(--radius);
       box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
     }
     .progressRow{
       display:flex;
@@ -161,7 +187,7 @@
       flex:1;
       height:12px;
       border-radius:999px;
-      background: rgba(255,255,255,.06);
+      background: rgba(255,255,255,.10);
       border:1px solid var(--line);
       overflow:hidden;
       min-width: 220px;
@@ -193,11 +219,15 @@
 
     .dayCard{
       border:1px solid var(--line);
-      background: linear-gradient(180deg, var(--card), rgba(255,255,255,.02));
+      background: linear-gradient(180deg, rgba(16,24,39,.82), rgba(255,255,255,.02));
       border-radius:var(--radius);
       box-shadow: var(--shadow);
       overflow:hidden;
       position:relative;
+      backdrop-filter: blur(10px);
+    }
+    [data-theme="light"] .dayCard{
+      background: linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,255,255,.62));
     }
     .dayHead{
       padding:14px 14px 12px;
@@ -229,7 +259,7 @@
       border-radius:999px;
       border:1px solid var(--line);
       color:var(--muted);
-      background: rgba(255,255,255,.03);
+      background: rgba(255,255,255,.06);
     }
     .tag.hotel{border-color:rgba(45,226,230,.35)}
     .tag.drive{border-color:rgba(124,92,255,.45)}
@@ -256,7 +286,7 @@
       width:42px; height:42px;
       border-radius:12px;
       border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
+      background: rgba(255,255,255,.06);
       display:grid;
       place-items:center;
       flex:0 0 auto;
@@ -276,7 +306,7 @@
     }
     .item{
       border:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
       border-radius:14px;
       padding:10px 10px;
       display:flex;
@@ -290,7 +320,7 @@
       padding:6px 8px;
       border-radius:12px;
       border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
+      background: rgba(255,255,255,.06);
       color:var(--text);
       font-size:13px;
       text-align:center;
@@ -322,13 +352,14 @@
     }
     .mini{
       border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
+      background: rgba(255,255,255,.06);
       color:var(--text);
       padding:7px 10px;
       border-radius:12px;
       cursor:pointer;
       font-size:12.5px;
       transition:.15s ease;
+      backdrop-filter: blur(8px);
     }
     .mini:hover{transform: translateY(-1px); border-color: rgba(45,226,230,.55)}
     .check{
@@ -343,7 +374,7 @@
     .check input{width:18px; height:18px}
     .item.done{
       border-color: rgba(52,211,153,.55);
-      background: linear-gradient(180deg, rgba(52,211,153,.10), rgba(255,255,255,.02));
+      background: linear-gradient(180deg, rgba(52,211,153,.12), rgba(255,255,255,.02));
     }
     .item.done .what{ text-decoration: line-through; color: rgba(233,238,247,.75) }
     [data-theme="light"] .item.done .what{ color: rgba(11,16,32,.65) }
@@ -371,6 +402,7 @@
       transition:.2s ease;
       max-width: 92vw;
       font-size:13px;
+      backdrop-filter: blur(10px);
     }
     [data-theme="light"] .toast{background: rgba(255,255,255,.92); color:#0b1020; border-color: rgba(124,92,255,.28)}
     .toast.show{opacity:1; transform: translateX(-50%) translateY(-6px)}
@@ -431,7 +463,6 @@
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script>
-  // ===== 行程資料（依你提供的內容整理與美化）=====
   const itinerary = [
     {
       id: "2026-02-20",
@@ -451,7 +482,8 @@
       subtitle: "上野神社 → 銀座拉麵甜點 → 淺草雷門",
       tags: ["shrine","food"],
       items: [
-        { time:"09:00", type:"shrine", title:"參拜：小野照崎神社、妙義神社", note:"早上人少好拍照，步調舒服。", place:"小野照崎神社" },
+        { time:"09:00", type:"shrine", title:"參拜：小野照崎神社", note:"早上人少好拍照，步調舒服。", place:"小野照崎神社" },
+        { time:"09:40", type:"shrine", title:"參拜：妙義神社", note:"順路補一座神社，拍個御朱印/鳥居感。", place:"妙義神社" },
         { time:"11:00", type:"food", title:"早餐/早午餐：Depot", note:"布丁＆烤土司人氣高，早點到更穩。", place:"Depot" },
         { time:"12:30", type:"food", title:"午餐：銀座八五（人氣拉麵）", note:"建議提早排隊，吃完再散步甜點。", place:"銀座 八五" },
         { time:"14:30", type:"food", title:"甜點：Frédéric Cassel", note:"補糖補能量，銀座逛街也順路。", place:"Frédéric Cassel Ginza Mitsukoshi Store" },
@@ -499,8 +531,8 @@
       tags: ["transit","spot","hotel"],
       items: [
         { time:"06:00", type:"transit", title:"抵達仙台 & Toyota Rent a Car Sendai 取車", note:"先補充早餐/咖啡，今天會很冷。", place:"Toyota Rent a Car 仙台" },
-        { time:"09:30", type:"spot", title:"藏王纜車（冰樹）", note:"保暖要夠：手套/帽子/暖暖包必備。", place:"Zao Ropeway" },
-        { time:"15:30", type:"transit", title:"銀山荘專用停車場 停車", note:"依旅宿指示接駁/步行入內。", place:"銀山荘 駐車場" },
+        { time:"08:00", type:"spot", title:"藏王纜車（冰樹）", note:"保暖要夠：手套/帽子/暖暖包必備。", place:"Zao Ropeway" },
+        { time:"15:30", type:"transit", title:"銀山荘・古勢起屋別館宿泊者専用駐車場", note:"依旅宿指示接駁/步行入內。", place:"銀山荘・古勢起屋別館宿泊者専用駐車場" },
         { time:"—", type:"hotel", title:"住宿：古勢起屋別館", note:"晚上溫泉街燈景超夢幻，慢慢拍。", place:"古勢起屋別館" },
       ]
     },
@@ -525,7 +557,8 @@
       subtitle: "寺院巡禮 → 排隊拉麵 → 漢堡點心 → 壽喜燒晚餐",
       tags: ["shrine","food"],
       items: [
-        { time:"09:30", type:"shrine", title:"參拜：法輪寺、感通寺", note:"節奏放慢，拍一些日常感的東京。", place:"法輪寺" },
+        { time:"09:30", type:"shrine", title:"參拜：法輪寺", note:"節奏放慢，拍一些日常感的東京。", place:"法輪寺" },
+        { time:"10:10", type:"shrine", title:"參拜：感通寺", note:"接著走第二個點，慢慢逛、慢慢拍。", place:"感通寺" },
         { time:"11:30", type:"food", title:"午餐：らぁ麺や嶋", note:"熱門店可能需要排隊，早到更好。", place:"らぁ麺や 嶋" },
         { time:"14:30", type:"food", title:"點心：Shogun Burger", note:"想要爽感就點招牌。", place:"Shogun Burger" },
         { time:"18:30", type:"food", title:"晚餐：伊吹壽喜燒", note:"暖胃收尾，今天吃得很完整。", place:"伊吹 すき焼き" },
@@ -538,7 +571,7 @@
       subtitle: "一整天放電 → 晚上燒肉補血",
       tags: ["spot","food"],
       items: [
-        { time:"08:30", type:"spot", title:"東京迪士尼海洋 全日遊玩", note:"建議入園先搶熱門設施/表演時段。", place:"Tokyo DisneySea" },
+        { time:"06:00", type:"spot", title:"東京迪士尼海洋 全日遊玩", note:"建議入園先搶熱門設施/表演時段。", place:"Tokyo DisneySea" },
         { time:"20:30", type:"food", title:"晚餐：焼肉ホルモン金樹", note:"玩完吃肉超幸福。", place:"焼肉ホルモン金樹" },
       ]
     },
@@ -567,7 +600,6 @@
     }
   ];
 
-  // ===== 狀態儲存 =====
   const STORAGE_KEY = "trip_checklist_v1";
   const THEME_KEY = "trip_theme_v1";
   const state = {
@@ -588,7 +620,6 @@
     window.__t = setTimeout(()=> el.classList.remove("show"), 1400);
   }
 
-  // ===== 工具：分類標籤 =====
   const typeLabel = {
     food:"餐廳/甜點",
     shrine:"神社/寺院",
@@ -599,10 +630,8 @@
   };
 
   function dayTags(day){
-    // 用既有 day.tags + items.type 自動補強
     const s = new Set(day.tags || []);
     day.items.forEach(i => s.add(i.type));
-    // 僅保留我們定義的類型
     return [...s].filter(x => typeLabel[x]);
   }
 
@@ -611,7 +640,6 @@
     return `https://www.google.com/maps/search/?api=1&query=${q}`;
   }
 
-  // ===== 渲染 =====
   const grid = document.getElementById("grid");
   const qEl = document.getElementById("q");
   const filterEl = document.getElementById("filter");
@@ -632,11 +660,9 @@
     if(filter === "all") return true;
 
     if(filter === "todo"){
-      // 只要該日有未完成項目就顯示
       return day.items.some((_, idx) => !state.done.has(itemKey(day.id, idx)));
     }
 
-    // 其餘：日內只要有該類型項目就顯示
     return day.items.some(i => i.type === filter);
   }
 
@@ -688,7 +714,6 @@
         row.className = "item" + (done ? " done" : "");
         row.dataset.type = it.type;
 
-        // 若目前 filter 指定某類型，只顯示符合的項目（todo 以外）
         if(filter !== "all" && filter !== "todo" && it.type !== filter){
           row.style.display = "none";
         }
@@ -724,7 +749,6 @@
             toast("已取消勾選 ↩️");
           }
           saveDone();
-          // todo 篩選下，勾到全完成就讓那天自動消失（重新 render）
           if(filterEl.value === "todo") render();
         });
 
@@ -751,7 +775,6 @@
     document.getElementById("barFill").style.width = pct + "%";
   }
 
-  // ===== 事件：搜尋/篩選/按鈕 =====
   qEl.addEventListener("input", () => render());
   filterEl.addEventListener("change", () => render());
 
@@ -770,7 +793,6 @@
     render();
   });
 
-  // ===== 主題（深/淺色）=====
   function applyTheme(t){
     document.documentElement.setAttribute("data-theme", t);
     localStorage.setItem(THEME_KEY, t);
@@ -783,7 +805,6 @@
     applyTheme(cur === "dark" ? "light" : "dark");
   });
 
-  // ===== 小工具：escape =====
   function escapeHtml(s){
     return String(s ?? "")
       .replaceAll("&","&amp;")
@@ -793,7 +814,6 @@
       .replaceAll("'","&#039;");
   }
 
-  // 初次渲染
   render();
 </script>
 </body>
