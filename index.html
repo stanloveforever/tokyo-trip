@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>東京×富士×仙台 行程表（互動版）</title>
+  <style>
+    :root{
+      --bg:#0b0f17;
+      --card:#101827;
+      --card2:#0e1523;
+      --text:#e9eef7;
+      --muted:#a9b4c7;
+      --line:#21304a;
+      --accent:#7c5cff;
+      --accent2:#2de2e6;
+      --good:#34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --shadow: 0 12px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+    [data-theme="light"]{
+      --bg:#f6f8ff;
+      --card:#ffffff;
+      --card2:#f3f6ff;
+      --text:#0b1020;
+      --muted:#58637a;
+      --line:#d8e0f2;
+      --accent:#5b5cff;
+      --accent2:#00b3c6;
+      --shadow: 0 14px 30px rgba(25,35,60,.10);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background: radial-gradient(1200px 800px at 20% -10%, rgba(124,92,255,.35), transparent 55%),
+                  radial-gradient(900px 700px at 90% 10%, rgba(45,226,230,.25), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      min-height:100vh;
+    }
+    a{color:inherit}
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:28px 18px 60px;
+    }
+    header{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      margin-bottom:18px;
+    }
+    .title{
+      display:flex; flex-direction:column; gap:8px;
+      max-width:720px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 12px;
+      background: linear-gradient(90deg, rgba(124,92,255,.18), rgba(45,226,230,.12));
+      border:1px solid rgba(124,92,255,.25);
+      border-radius:999px;
+      color:var(--text);
+      width:fit-content;
+      box-shadow:0 10px 24px rgba(124,92,255,.10);
+    }
+    .badge .dot{
+      width:10px; height:10px; border-radius:50%;
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      box-shadow:0 0 0 6px rgba(124,92,255,.16);
+    }
+    h1{
+      margin:0;
+      font-size:clamp(22px, 3.2vw, 34px);
+      letter-spacing:.2px;
+      line-height:1.2;
+    }
+    .sub{
+      margin:0;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:14.5px;
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .btn{
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      transition:.18s ease;
+      box-shadow: 0 8px 18px rgba(0,0,0,.12);
+      user-select:none;
+    }
+    [data-theme="light"] .btn{
+      background: linear-gradient(180deg, rgba(10,15,30,.04), rgba(10,15,30,.02));
+      box-shadow: 0 10px 18px rgba(25,35,60,.08);
+    }
+    .btn:hover{transform: translateY(-1px); border-color: rgba(124,92,255,.55)}
+    .btn:active{transform: translateY(0px)}
+    .btn.primary{
+      border:1px solid rgba(124,92,255,.55);
+      background: linear-gradient(90deg, rgba(124,92,255,.22), rgba(45,226,230,.12));
+    }
+    .pill{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius:12px;
+    }
+    input[type="search"]{
+      width:min(360px, 72vw);
+      border:none;
+      outline:none;
+      background:transparent;
+      color:var(--text);
+      font-size:14px;
+    }
+    .select{
+      border:none;
+      outline:none;
+      background:transparent;
+      color:var(--text);
+      font-size:14px;
+      cursor:pointer;
+    }
+    .select option{color:#111}
+    .panel{
+      margin:16px 0 22px;
+      padding:14px 14px 12px;
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border-radius:var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .progressRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+    .bar{
+      flex:1;
+      height:12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.06);
+      border:1px solid var(--line);
+      overflow:hidden;
+      min-width: 220px;
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width .25s ease;
+    }
+    .kpi{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      color:var(--muted);
+      font-size:13.5px;
+    }
+    .kpi strong{color:var(--text)}
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+    }
+    @media (min-width: 920px){
+      .grid{grid-template-columns: 1fr 1fr}
+    }
+
+    .dayCard{
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, var(--card), rgba(255,255,255,.02));
+      border-radius:var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .dayHead{
+      padding:14px 14px 12px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .dayHead:hover{
+      background: linear-gradient(180deg, rgba(124,92,255,.10), transparent 65%);
+    }
+    .dayTitle{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width: 0;
+    }
+    .dayTitle .date{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .tag{
+      font-size:12px;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color:var(--muted);
+      background: rgba(255,255,255,.03);
+    }
+    .tag.hotel{border-color:rgba(45,226,230,.35)}
+    .tag.drive{border-color:rgba(124,92,255,.45)}
+    .tag.food{border-color:rgba(251,191,36,.45)}
+    .tag.shrine{border-color:rgba(52,211,153,.45)}
+    .tag.transit{border-color:rgba(251,113,133,.40)}
+    .dayTitle h2{
+      margin:0;
+      font-size:18px;
+      line-height:1.25;
+      letter-spacing:.2px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      max-width: 560px;
+    }
+    .dayTitle p{
+      margin:0;
+      color:var(--muted);
+      font-size:13.5px;
+      line-height:1.45;
+    }
+    .chev{
+      width:42px; height:42px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      display:grid;
+      place-items:center;
+      flex:0 0 auto;
+      transition:.18s ease;
+    }
+    .dayCard[data-open="true"] .chev{transform: rotate(180deg); border-color: rgba(124,92,255,.55)}
+    .dayBody{
+      padding:0 14px 14px;
+      display:none;
+    }
+    .dayCard[data-open="true"] .dayBody{display:block}
+    .items{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:12px;
+    }
+    .item{
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border-radius:14px;
+      padding:10px 10px;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .time{
+      font-variant-numeric: tabular-nums;
+      flex:0 0 auto;
+      min-width: 56px;
+      padding:6px 8px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color:var(--text);
+      font-size:13px;
+      text-align:center;
+    }
+    .main{
+      flex:1;
+      min-width: 0;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .main .what{
+      font-size:14.5px;
+      line-height:1.35;
+      margin:0;
+    }
+    .main .note{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+    .actions{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      align-items:flex-end;
+      flex:0 0 auto;
+    }
+    .mini{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color:var(--text);
+      padding:7px 10px;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:12.5px;
+      transition:.15s ease;
+    }
+    .mini:hover{transform: translateY(-1px); border-color: rgba(45,226,230,.55)}
+    .check{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+      cursor:pointer;
+      color:var(--muted);
+      font-size:12.5px;
+    }
+    .check input{width:18px; height:18px}
+    .item.done{
+      border-color: rgba(52,211,153,.55);
+      background: linear-gradient(180deg, rgba(52,211,153,.10), rgba(255,255,255,.02));
+    }
+    .item.done .what{ text-decoration: line-through; color: rgba(233,238,247,.75) }
+    [data-theme="light"] .item.done .what{ color: rgba(11,16,32,.65) }
+
+    .footerHint{
+      margin-top:18px;
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.6;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform: translateX(-50%);
+      background: rgba(10,12,18,.88);
+      border:1px solid rgba(124,92,255,.35);
+      color:#fff;
+      padding:10px 12px;
+      border-radius:14px;
+      box-shadow: 0 16px 40px rgba(0,0,0,.35);
+      opacity:0;
+      pointer-events:none;
+      transition:.2s ease;
+      max-width: 92vw;
+      font-size:13px;
+    }
+    [data-theme="light"] .toast{background: rgba(255,255,255,.92); color:#0b1020; border-color: rgba(124,92,255,.28)}
+    .toast.show{opacity:1; transform: translateX(-50%) translateY(-6px)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <div class="badge"><span class="dot"></span> 2026/02/20–03/01｜東京 × 富士河口湖 × 仙台</div>
+        <h1>旅遊行程表（互動版）</h1>
+        <p class="sub">可勾選完成、搜尋店名地點、快速開地圖。你的勾選狀態會自動保存。</p>
+      </div>
+
+      <div class="controls">
+        <div class="pill" title="搜尋：店名 / 神社 / 富士山 / 牛舌 等">
+          🔎 <input id="q" type="search" placeholder="搜尋關鍵字（例如：牛舌 / 淺草 / 藏王）" />
+        </div>
+
+        <div class="pill" title="篩選類型">
+          🧩
+          <select id="filter" class="select">
+            <option value="all">全部</option>
+            <option value="todo">只看未完成</option>
+            <option value="food">餐廳/甜點</option>
+            <option value="shrine">神社/寺院</option>
+            <option value="hotel">住宿</option>
+            <option value="transit">交通/租車</option>
+            <option value="spot">景點/拍照</option>
+            <option value="shop">購物</option>
+          </select>
+        </div>
+
+        <button id="toggleTheme" class="btn">🌗 深色/淺色</button>
+        <button id="expandAll" class="btn primary">🧾 全部展開</button>
+        <button id="reset" class="btn" title="清除所有勾選（不可復原）">🧼 清空勾選</button>
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="progressRow">
+        <div class="kpi">
+          <span>完成進度：<strong id="doneText">0</strong></span>
+          <span>｜總行程：<strong id="totalText">0</strong></span>
+          <span>｜完成率：<strong id="pctText">0%</strong></span>
+        </div>
+        <div class="bar" aria-label="進度條"><div id="barFill"></div></div>
+      </div>
+    </section>
+
+    <main id="grid" class="grid"></main>
+
+    <p class="footerHint">
+      小提示：每個行程右側都有「地圖」按鈕會直接用 Google 地圖搜尋該地點；勾選完成後會自動記住（保存在瀏覽器）。
+    </p>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+  // ===== 行程資料（依你提供的內容整理與美化）=====
+  const itinerary = [
+    {
+      id: "2026-02-20",
+      dateLabel: "2/20（四）",
+      title: "抵達東京：厚切牛舌之夜",
+      subtitle: "上野入住 → 牛舌吃到飽",
+      tags: ["hotel","food"],
+      items: [
+        { time:"17:00", type:"hotel", title:"抵達並入住 Ueno First City Hotel", note:"放行李、稍作休息，晚上直接進攻牛舌。", place:"Ueno First City Hotel" },
+        { time:"19:00", type:"food",  title:"晚餐：焼肉一心たん助 上野本店（厚切牛舌吃到飽）", note:"建議提早到或先確認候位方式。", place:"焼肉一心たん助 上野本店" },
+      ]
+    },
+    {
+      id: "2026-02-21",
+      dateLabel: "2/21（五）",
+      title: "神社巡禮與銀座美食",
+      subtitle: "上野神社 → 銀座拉麵甜點 → 淺草雷門",
+      tags: ["shrine","food"],
+      items: [
+        { time:"09:00", type:"shrine", title:"參拜：小野照崎神社、妙義神社", note:"早上人少好拍照，步調舒服。", place:"小野照崎神社" },
+        { time:"11:00", type:"food", title:"早餐/早午餐：Depot", note:"布丁＆烤土司人氣高，早點到更穩。", place:"Depot" },
+        { time:"12:30", type:"food", title:"午餐：銀座八五（人氣拉麵）", note:"建議提早排隊，吃完再散步甜點。", place:"銀座 八五" },
+        { time:"14:30", type:"food", title:"甜點：Frédéric Cassel", note:"補糖補能量，銀座逛街也順路。", place:"Frédéric Cassel Ginza Mitsukoshi Store" },
+        { time:"16:00", type:"shrine", title:"淺草：今戶神社、淺草寺雷門", note:"拍雷門、逛仲見世，傍晚燈光很美。", place:"浅草寺 雷門" },
+        { time:"17:30", type:"food", title:"點心：KURAMAE CANNELE", note:"可麗露外脆內Q，買了邊走邊吃。", place:"KURAMAE CANNELE" },
+        { time:"—", type:"hotel", title:"住宿：Ueno First City Hotel", note:"回上野休息，隔天要自駕早起。", place:"Ueno First City Hotel" },
+      ]
+    },
+    {
+      id: "2026-02-22",
+      dateLabel: "2/22（六）",
+      title: "自駕前往富士河口湖",
+      subtitle: "上野取車 → 富士山拍照點 → 河口湖入住",
+      tags: ["transit","spot","hotel","food"],
+      items: [
+        { time:"08:00", type:"transit", title:"豐田租車：上野駅前取車", note:"出發前確認 ETC／保險／導航語言。", place:"Toyota Rent a Car 上野駅前" },
+        { time:"10:30", type:"spot", title:"日川時計店（富士山街景拍攝點）", note:"經典構圖：街道延伸＋富士山。", place:"日川時計店" },
+        { time:"12:00", type:"spot", title:"新倉山淺間公園", note:"階梯＋五重塔＋富士山，體力要留。", place:"新倉山浅間公園" },
+        { time:"14:30", type:"spot", title:"富士山遙拝所", note:"視野開闊、適合拍大景。", place:"富士山 遙拝所" },
+        { time:"18:30", type:"food", title:"晚餐：Torikko", note:"回到河口湖區域慢慢吃。", place:"Torikko" },
+        { time:"—", type:"hotel", title:"住宿：THE NOBORISAKA HOTEL", note:"隔天清晨拍逆富士，記得早睡。", place:"THE NOBORISAKA HOTEL" },
+      ]
+    },
+    {
+      id: "2026-02-23",
+      dateLabel: "2/23（日）",
+      title: "逆富士、御殿場購物與夜巴",
+      subtitle: "清晨逆富士 → 忍野八海 → Outlet → 夜巴去仙台",
+      tags: ["spot","shop","transit","food"],
+      items: [
+        { time:"06:00", type:"spot", title:"產屋ヶ崎（逆富士最佳時機）", note:"看天氣與風，湖面越平越容易出現倒影。", place:"産屋ヶ崎" },
+        { time:"09:00", type:"spot", title:"忍野八海 散策", note:"水很清、拍照很仙，注意人潮。", place:"忍野八海" },
+        { time:"11:30", type:"shrine", title:"富知六所浅間神社", note:"神社氛圍很棒，停留不需太久。", place:"富知六所浅間神社" },
+        { time:"13:30", type:"shop", title:"御殿場 Outlet 購物（重點：MOUSSY / SLY）", note:"先鎖定目標店，省時間也省腳。", place:"御殿場プレミアム・アウトレット" },
+        { time:"18:00", type:"transit", title:"返回東京市區還車", note:"預留塞車時間，避免延誤晚餐/夜巴。", place:"東京" },
+        { time:"19:30", type:"food", title:"晚餐：Michishirube", note:"回到市區補充體力。", place:"Michishirube" },
+        { time:"23:00", type:"transit", title:"夜間巴士：東京 → 仙台", note:"建議帶頸枕/眼罩/耳塞，提升睡眠品質。", place:"Tokyo Station" },
+      ]
+    },
+    {
+      id: "2026-02-24",
+      dateLabel: "2/24（一）",
+      title: "藏王冰樹與銀山溫泉夢幻之夜",
+      subtitle: "清晨到仙台取車 → 藏王纜車 → 銀山溫泉入住",
+      tags: ["transit","spot","hotel"],
+      items: [
+        { time:"06:00", type:"transit", title:"抵達仙台 & Toyota Rent a Car Sendai 取車", note:"先補充早餐/咖啡，今天會很冷。", place:"Toyota Rent a Car 仙台" },
+        { time:"09:30", type:"spot", title:"藏王纜車（冰樹）", note:"保暖要夠：手套/帽子/暖暖包必備。", place:"Zao Ropeway" },
+        { time:"15:30", type:"transit", title:"銀山荘專用停車場 停車", note:"依旅宿指示接駁/步行入內。", place:"銀山荘 駐車場" },
+        { time:"—", type:"hotel", title:"住宿：古勢起屋別館", note:"晚上溫泉街燈景超夢幻，慢慢拍。", place:"古勢起屋別館" },
+      ]
+    },
+    {
+      id: "2026-02-25",
+      dateLabel: "2/25（二）",
+      title: "狐狸村與仙台美食，深夜回東京",
+      subtitle: "狐狸村 → 仙台神社 → 伴手禮 → 新幹線回東京",
+      tags: ["spot","shrine","food","transit"],
+      items: [
+        { time:"10:00", type:"spot", title:"出發：宮城藏王狐狸村", note:"注意園區規範，拍照別驚擾狐狸。", place:"宮城蔵王キツネ村" },
+        { time:"14:00", type:"shrine", title:"返回仙台：參拜 大崎八幡宮", note:"很有氣勢的神社，適合收心散步。", place:"大崎八幡宮" },
+        { time:"16:00", type:"shop", title:"仙台車站 伴手禮採買", note:"牛舌相關、點心、限定口味一次補齊。", place:"仙台駅" },
+        { time:"18:30", type:"food", title:"晚餐：仙台車站當地美食（牛舌/壽司）", note:"吃飽再上車回東京更舒服。", place:"仙台駅" },
+        { time:"21:00", type:"transit", title:"新幹線：仙台 → 東京", note:"可先把隔天東京行程需要的交通票/路線確認一下。", place:"仙台駅" },
+      ]
+    },
+    {
+      id: "2026-02-26",
+      dateLabel: "2/26（三）",
+      title: "東京深度美食與神社",
+      subtitle: "寺院巡禮 → 排隊拉麵 → 漢堡點心 → 壽喜燒晚餐",
+      tags: ["shrine","food"],
+      items: [
+        { time:"09:30", type:"shrine", title:"參拜：法輪寺、感通寺", note:"節奏放慢，拍一些日常感的東京。", place:"法輪寺" },
+        { time:"11:30", type:"food", title:"午餐：らぁ麺や嶋", note:"熱門店可能需要排隊，早到更好。", place:"らぁ麺や 嶋" },
+        { time:"14:30", type:"food", title:"點心：Shogun Burger", note:"想要爽感就點招牌。", place:"Shogun Burger" },
+        { time:"18:30", type:"food", title:"晚餐：伊吹壽喜燒", note:"暖胃收尾，今天吃得很完整。", place:"伊吹 すき焼き" },
+      ]
+    },
+    {
+      id: "2026-02-27",
+      dateLabel: "2/27（四）",
+      title: "東京迪士尼海洋",
+      subtitle: "一整天放電 → 晚上燒肉補血",
+      tags: ["spot","food"],
+      items: [
+        { time:"08:30", type:"spot", title:"東京迪士尼海洋 全日遊玩", note:"建議入園先搶熱門設施/表演時段。", place:"Tokyo DisneySea" },
+        { time:"20:30", type:"food", title:"晚餐：焼肉ホルモン金樹", note:"玩完吃肉超幸福。", place:"焼肉ホルモン金樹" },
+      ]
+    },
+    {
+      id: "2026-02-28",
+      dateLabel: "2/28（五）",
+      title: "阿佐谷清新散策",
+      subtitle: "神社散步 → 炸豬排名店 → 晚餐收尾",
+      tags: ["shrine","food"],
+      items: [
+        { time:"10:30", type:"shrine", title:"阿佐谷神明宮", note:"氣氛很舒服，適合拍清新日系感。", place:"阿佐谷神明宮" },
+        { time:"12:30", type:"food", title:"午餐：Tonkatsu Narikura", note:"名店請預留排隊/預約可能。", place:"とんかつ 成蔵" },
+        { time:"18:30", type:"food", title:"晚餐：Hiyoku no Tori", note:"用溫柔的一餐收尾今天。", place:"Hiyoku no Tori" },
+      ]
+    },
+    {
+      id: "2026-03-01",
+      dateLabel: "3/1（六）",
+      title: "銀座午餐後前往機場",
+      subtitle: "最後一餐燒肉 → 出發機場",
+      tags: ["food","transit"],
+      items: [
+        { time:"11:00", type:"food", title:"午餐：燒肉 INOUE 銀座店", note:"最後一餐吃好吃滿，拍張合照收工。", place:"焼肉 INOUE 銀座店" },
+        { time:"13:00", type:"transit", title:"結束行程，出發前往機場", note:"建議提早出發，保留退稅/買伴手禮時間。", place:"東京 機場" },
+      ]
+    }
+  ];
+
+  // ===== 狀態儲存 =====
+  const STORAGE_KEY = "trip_checklist_v1";
+  const THEME_KEY = "trip_theme_v1";
+  const state = {
+    done: new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]")),
+    openAll: false
+  };
+
+  function saveDone(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...state.done]));
+    renderProgress();
+  }
+
+  function toast(msg){
+    const el = document.getElementById("toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(window.__t);
+    window.__t = setTimeout(()=> el.classList.remove("show"), 1400);
+  }
+
+  // ===== 工具：分類標籤 =====
+  const typeLabel = {
+    food:"餐廳/甜點",
+    shrine:"神社/寺院",
+    hotel:"住宿",
+    transit:"交通/租車",
+    spot:"景點/拍照",
+    shop:"購物"
+  };
+
+  function dayTags(day){
+    // 用既有 day.tags + items.type 自動補強
+    const s = new Set(day.tags || []);
+    day.items.forEach(i => s.add(i.type));
+    // 僅保留我們定義的類型
+    return [...s].filter(x => typeLabel[x]);
+  }
+
+  function makeMapUrl(place){
+    const q = encodeURIComponent(place);
+    return `https://www.google.com/maps/search/?api=1&query=${q}`;
+  }
+
+  // ===== 渲染 =====
+  const grid = document.getElementById("grid");
+  const qEl = document.getElementById("q");
+  const filterEl = document.getElementById("filter");
+
+  function itemKey(dayId, idx){ return `${dayId}__${idx}`; }
+
+  function matchesQuery(day, query){
+    if(!query) return true;
+    const t = query.toLowerCase();
+    const hay = [
+      day.dateLabel, day.title, day.subtitle,
+      ...day.items.flatMap(i => [i.time, i.title, i.note, i.place])
+    ].join(" ").toLowerCase();
+    return hay.includes(t);
+  }
+
+  function matchesFilter(day, filter){
+    if(filter === "all") return true;
+
+    if(filter === "todo"){
+      // 只要該日有未完成項目就顯示
+      return day.items.some((_, idx) => !state.done.has(itemKey(day.id, idx)));
+    }
+
+    // 其餘：日內只要有該類型項目就顯示
+    return day.items.some(i => i.type === filter);
+  }
+
+  function render(){
+    const query = qEl.value.trim();
+    const filter = filterEl.value;
+
+    grid.innerHTML = "";
+
+    const days = itinerary
+      .filter(d => matchesQuery(d, query))
+      .filter(d => matchesFilter(d, filter));
+
+    days.forEach((day) => {
+      const card = document.createElement("section");
+      card.className = "dayCard";
+      card.dataset.open = state.openAll ? "true" : "false";
+
+      const head = document.createElement("div");
+      head.className = "dayHead";
+      head.innerHTML = `
+        <div class="dayTitle">
+          <div class="date">
+            <span class="tag drive">${day.dateLabel}</span>
+            ${dayTags(day).map(t => `<span class="tag ${t}">${typeLabel[t]}</span>`).join("")}
+          </div>
+          <h2 title="${escapeHtml(day.title)}">${escapeHtml(day.title)}</h2>
+          <p>${escapeHtml(day.subtitle)}</p>
+        </div>
+        <div class="chev" aria-hidden="true">▾</div>
+      `;
+
+      head.addEventListener("click", () => {
+        const open = card.dataset.open === "true";
+        card.dataset.open = open ? "false" : "true";
+      });
+
+      const body = document.createElement("div");
+      body.className = "dayBody";
+
+      const itemsWrap = document.createElement("div");
+      itemsWrap.className = "items";
+
+      day.items.forEach((it, idx) => {
+        const key = itemKey(day.id, idx);
+        const done = state.done.has(key);
+
+        const row = document.createElement("div");
+        row.className = "item" + (done ? " done" : "");
+        row.dataset.type = it.type;
+
+        // 若目前 filter 指定某類型，只顯示符合的項目（todo 以外）
+        if(filter !== "all" && filter !== "todo" && it.type !== filter){
+          row.style.display = "none";
+        }
+
+        row.innerHTML = `
+          <div class="time">${escapeHtml(it.time || "—")}</div>
+          <div class="main">
+            <p class="what"><strong>${escapeHtml(it.title)}</strong></p>
+            <p class="note">${escapeHtml(it.note || "")}</p>
+          </div>
+          <div class="actions">
+            <button class="mini" data-map>🗺️ 地圖</button>
+            <label class="check" title="勾選完成（會自動保存）">
+              <input type="checkbox" ${done ? "checked":""} />
+              完成
+            </label>
+          </div>
+        `;
+
+        row.querySelector('[data-map]').addEventListener("click", (e) => {
+          e.stopPropagation();
+          window.open(makeMapUrl(it.place || it.title), "_blank");
+        });
+
+        row.querySelector('input[type="checkbox"]').addEventListener("change", (e) => {
+          if(e.target.checked){
+            state.done.add(key);
+            row.classList.add("done");
+            toast("已完成 ✅");
+          } else {
+            state.done.delete(key);
+            row.classList.remove("done");
+            toast("已取消勾選 ↩️");
+          }
+          saveDone();
+          // todo 篩選下，勾到全完成就讓那天自動消失（重新 render）
+          if(filterEl.value === "todo") render();
+        });
+
+        itemsWrap.appendChild(row);
+      });
+
+      body.appendChild(itemsWrap);
+      card.appendChild(head);
+      card.appendChild(body);
+      grid.appendChild(card);
+    });
+
+    renderProgress();
+  }
+
+  function renderProgress(){
+    const total = itinerary.reduce((sum, d) => sum + d.items.length, 0);
+    const done = state.done.size;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+
+    document.getElementById("totalText").textContent = total;
+    document.getElementById("doneText").textContent = done;
+    document.getElementById("pctText").textContent = pct + "%";
+    document.getElementById("barFill").style.width = pct + "%";
+  }
+
+  // ===== 事件：搜尋/篩選/按鈕 =====
+  qEl.addEventListener("input", () => render());
+  filterEl.addEventListener("change", () => render());
+
+  document.getElementById("expandAll").addEventListener("click", () => {
+    state.openAll = !state.openAll;
+    document.getElementById("expandAll").textContent = state.openAll ? "🧾 全部收合" : "🧾 全部展開";
+    document.querySelectorAll(".dayCard").forEach(c => c.dataset.open = state.openAll ? "true" : "false");
+  });
+
+  document.getElementById("reset").addEventListener("click", () => {
+    const ok = confirm("確定要清空所有勾選嗎？（不可復原）");
+    if(!ok) return;
+    state.done.clear();
+    saveDone();
+    toast("已清空 🧼");
+    render();
+  });
+
+  // ===== 主題（深/淺色）=====
+  function applyTheme(t){
+    document.documentElement.setAttribute("data-theme", t);
+    localStorage.setItem(THEME_KEY, t);
+  }
+  const savedTheme = localStorage.getItem(THEME_KEY);
+  if(savedTheme) applyTheme(savedTheme);
+
+  document.getElementById("toggleTheme").addEventListener("click", () => {
+    const cur = document.documentElement.getAttribute("data-theme") || "dark";
+    applyTheme(cur === "dark" ? "light" : "dark");
+  });
+
+  // ===== 小工具：escape =====
+  function escapeHtml(s){
+    return String(s ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  // 初次渲染
+  render();
+</script>
+</body>
+</html>
