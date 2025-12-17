@@ -1,3 +1,4 @@
+```html
 <!doctype html>
 <html lang="zh-Hant-TW">
 <head>
@@ -21,7 +22,7 @@
       --radius: 18px;
 
       /* ✅ 背景底圖：要換圖就改這行 URL */
-      --bg-img: url("https://res.klook.com/image/upload/activities/dou1pmzm3f41p75jkox9.jpg");
+      --bg-img: url("https://res.klook.com/image/upload/activities/dou1pmzm3f41p75jkox9.jpg"");
     }
     [data-theme="light"]{
       --bg:#f6f8ff;
@@ -225,10 +226,26 @@
       overflow:hidden;
       position:relative;
       backdrop-filter: blur(10px);
+      transition: .18s ease;
     }
     [data-theme="light"] .dayCard{
       background: linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,255,255,.62));
     }
+
+    /* ✅ 只要同一天全部都勾完：整張更亮 + 外框完成色 */
+    .dayCard[data-done="true"]{
+      border-color: rgba(52,211,153,.70);
+      background: linear-gradient(180deg, rgba(52,211,153,.16), rgba(255,255,255,.02));
+      box-shadow: 0 18px 56px rgba(52,211,153,.12), var(--shadow);
+    }
+    [data-theme="light"] .dayCard[data-done="true"]{
+      background: linear-gradient(180deg, rgba(52,211,153,.14), rgba(255,255,255,.72));
+      box-shadow: 0 18px 56px rgba(52,211,153,.10), var(--shadow);
+    }
+    .dayCard[data-done="true"] .dayHead{
+      background: linear-gradient(180deg, rgba(52,211,153,.14), transparent 70%);
+    }
+
     .dayHead{
       padding:14px 14px 12px;
       display:flex;
@@ -608,6 +625,14 @@
     openAll: false
   };
 
+  function itemKey(dayId, idx){ return `${dayId}__${idx}`; }
+
+  function updateDayCardState(card, day){
+    const total = day.items.length;
+    const doneCount = day.items.reduce((n, _, idx) => n + (state.done.has(itemKey(day.id, idx)) ? 1 : 0), 0);
+    card.dataset.done = (total > 0 && doneCount === total) ? "true" : "false";
+  }
+
   function saveDone(){
     localStorage.setItem(STORAGE_KEY, JSON.stringify([...state.done]));
     renderProgress();
@@ -645,8 +670,6 @@
   const qEl = document.getElementById("q");
   const filterEl = document.getElementById("filter");
 
-  function itemKey(dayId, idx){ return `${dayId}__${idx}`; }
-
   function matchesQuery(day, query){
     if(!query) return true;
     const t = query.toLowerCase();
@@ -659,11 +682,9 @@
 
   function matchesFilter(day, filter){
     if(filter === "all") return true;
-
     if(filter === "todo"){
       return day.items.some((_, idx) => !state.done.has(itemKey(day.id, idx)));
     }
-
     return day.items.some(i => i.type === filter);
   }
 
@@ -681,6 +702,7 @@
       const card = document.createElement("section");
       card.className = "dayCard";
       card.dataset.open = state.openAll ? "true" : "false";
+      updateDayCardState(card, day);
 
       const head = document.createElement("div");
       head.className = "dayHead";
@@ -750,6 +772,7 @@
             toast("已取消勾選 ↩️");
           }
           saveDone();
+          updateDayCardState(card, day);
           if(filterEl.value === "todo") render();
         });
 
@@ -819,4 +842,4 @@
 </script>
 </body>
 </html>
-
+```
